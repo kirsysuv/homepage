@@ -16,7 +16,16 @@ export default async function calendarProxyHandler(req, res) {
         return res.status(403).json({ error: "No integration URL specified" });
       }
 
-      const [status, contentType, data] = await httpProxy(integration.url);
+
+      // Add Headers
+      const headers = req.extraHeaders ?? integration.headers ?? {};
+      
+      const params = {
+        method: 'GET',
+        headers,
+      };
+
+      const [status, contentType, data] = await httpProxy(integration.url,params);
 
       if (contentType) res.setHeader("Content-Type", contentType);
 
